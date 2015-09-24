@@ -4,10 +4,10 @@ library(stringr)
 library(base64enc)
 
 #### twitter api ##### 
-Consumer_key<- "yR5zJBVo62ttE6c3jqDEZb6Li"
-Consumer_Secret <-"BHfSMJVrMaFpQoGAXb2OAmYdQRNPMTacIVvCXB9raauswIjBLb"
-Access_Token<- "3473101817-icXzDwoqhXP4wu3KULIpOBOwTzA1I9rMeSlVkrw"
-Access_Secret <-	"ipgXkA7T0TS5XKPWdAMAEIVjnl5lGN36w9nAaQrmGOlsH"
+Consumer_key<- "xxxx"
+Consumer_Secret <-"xxxx"
+Access_Token<- "xxxxx"
+Access_Secret <-	"xxxx"
 
 setup_twitter_oauth(Consumer_key,Consumer_Secret,Access_Token,Access_Secret)
 
@@ -74,6 +74,7 @@ ver_labs = get.vertex.attribute(rt_graph, "name", index=V(rt_graph))
 glay = layout.fruchterman.reingold(rt_graph)
 
 # plot
+png(filename = "obama_retweet_graph.png")
 par(bg="gray15", mar=c(1,1,1,1))
 plot(rt_graph, layout=glay,
      vertex.color="gray25",
@@ -90,11 +91,12 @@ plot(rt_graph, layout=glay,
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
       cex.main=1, col.main="gray95") 
+dev.off()
 
 
-
-#### Step 7: Let's try to give it a more obamacare look ####
+#### Step 7: Let's try to give it a more bio look ####
 # another plot
+png(filename = "obama_retweet_graph2.png")
 par(bg="gray15", mar=c(1,1,1,1))
 plot(rt_graph, layout=glay,
 vertex.color=hsv(h=.35, s=1, v=.7, alpha=0.1),
@@ -111,4 +113,4 @@ edge.color=hsv(h=.35, s=1, v=.7, alpha=0.4))
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
 cex.main=1, col.main="gray95", family="mono")
-
+dev.off()
