@@ -58,64 +58,44 @@ who_post = unlist(who_post)
 who_retweet = unlist(who_retweet)
 
 
-#### Step 5: Create graph from an edglist #### 
-# two column matrix of edges
+#### Create an edglist #### 
 retweeter_poster = cbind(who_post,who_retweet)# edge list matrix
 
-# generate graph
-rt_graph = graph.edgelist(retweeter_poster,directed = T)
+#rt_graph = graph.edgelist(retweeter_poster,directed = T)# generate graph
 
-# get vertex names
-ver_labs = get.vertex.attribute(rt_graph, "name", index=V(rt_graph))
+#ver_labs = get.vertex.attribute(rt_graph, "name", index=V(rt_graph))# get vertex names
 
-#### create an vertices list ####
-length(unique(retweeter_poster[,1]))
+#### create an vertices list showing the most popular poster####
+length(unique(as.character(retweeter_poster)))# total users
+length(unique(retweeter_poster[,1]))# be retweeted 
 vertices_weight<-data.frame(table(retweeter_poster[,1]))
-names(vertices_weight)<-c("who_post","weight")
+names(vertices_weight)<-c("users","weight")
+onlyretweet<-setdiff(unique(retweeter_poster[,2]),unique(retweeter_poster[,1]))# not be retweeted
+vertices_weight<-rbind(vertices_weight,data.frame(users=onlyretweet,weight=0))
 
 #### Step 6: Let's plot the graph ####
+
+retweeter_poster<-as.data.frame(retweeter_poster)
+net<-graph.data.frame(d=as.data.frame(retweeter_poster)
+                      , vertices = vertices_weight, directed=T)
+V(net)$weight
+
 # choose some layout
-fruch = layout.fruchterman.reingold(rt_graph)
-circle=layout.circle(rt_graph)
+fruch = layout.fruchterman.reingold(net)
+circle=layout.circle(net)
 
-# plot
 png(filename = "obama_retweet_graph.png")
-par(mar=c(0,0,0,0))
-plot(rt_graph, layout=fruch,
-     vertex.color="gray25",
-     vertex.size=10,
-     vertex.label=NA,
-     vertex.label.family="sans",
-     vertex.shape="none",
-     vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5),
-     vertex.label.cex=0.85,
-     edge.arrow.size=0.8,
-     edge.arrow.width=0.5,
-     edge.width=3,
-     edge.color=hsv(h=.95, s=1, v=.7, alpha=0.5))
+par(bg="gray15",mar=c(0,0,0,0))
+plot(net,layout=fruch
+     ,vertex.size=V(net)$weight*0.2+1
+     ,vertex.color="red",
+     ,vertex.label=ifelse(V(net)$weight>2,V(net)$name,NA)
+     ,vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5)
+     ,vertex.label.family="mono"
+     ,edge.arrow.size=.4
+     ,edge.color=hsv(h=.35, s=1, v=.7, alpha=0.4))
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
-      cex.main=1, col.main="red") 
+      cex.main=1, col.main="gray95",family="mono") 
 dev.off()
 
-
-#### Step 7: Let's try to give it a more bio look ####
-# another plot
-png(filename = "obama_retweet_graph2.png")
-par(bg="gray15", mar=c(1,1,1,1))
-plot(rt_graph, layout=glay,
-vertex.color=hsv(h=.35, s=1, v=.7, alpha=0.1),
-vertex.frame.color=hsv(h=.35, s=1, v=.7, alpha=0.1),
-vertex.size=5,
-vertex.label=ver_labs,
-vertex.label.family="mono",
-vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5),
-vertex.label.cex=0.85,
-edge.arrow.size=0.8,
-edge.arrow.width=0.5,
-edge.width=3,
-edge.color=hsv(h=.35, s=1, v=.7, alpha=0.4))
-# add title
-title("\nTweets with 'obamacare':  Who retweets whom",
-cex.main=1, col.main="gray95", family="mono")
-dev.off()
