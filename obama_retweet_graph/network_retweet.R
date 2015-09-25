@@ -60,26 +60,31 @@ who_retweet = unlist(who_retweet)
 
 #### Step 5: Create graph from an edglist #### 
 # two column matrix of edges
-retweeter_poster = cbind(who_retweet, who_post)
+retweeter_poster = cbind(who_post,who_retweet)# edge list matrix
 
 # generate graph
-rt_graph = graph.edgelist(retweeter_poster)
+rt_graph = graph.edgelist(retweeter_poster,directed = T)
 
 # get vertex names
 ver_labs = get.vertex.attribute(rt_graph, "name", index=V(rt_graph))
 
+#### create an vertices list ####
+length(unique(retweeter_poster[,1]))
+vertices_weight<-data.frame(table(retweeter_poster[,1]))
+names(vertices_weight)<-c("who_post","weight")
 
 #### Step 6: Let's plot the graph ####
 # choose some layout
-glay = layout.fruchterman.reingold(rt_graph)
+fruch = layout.fruchterman.reingold(rt_graph)
+circle=layout.circle(rt_graph)
 
 # plot
 png(filename = "obama_retweet_graph.png")
-par(bg="gray15", mar=c(1,1,1,1))
-plot(rt_graph, layout=glay,
+par(mar=c(0,0,0,0))
+plot(rt_graph, layout=fruch,
      vertex.color="gray25",
      vertex.size=10,
-     vertex.label=ver_labs,
+     vertex.label=NA,
      vertex.label.family="sans",
      vertex.shape="none",
      vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5),
@@ -90,7 +95,7 @@ plot(rt_graph, layout=glay,
      edge.color=hsv(h=.95, s=1, v=.7, alpha=0.5))
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
-      cex.main=1, col.main="gray95") 
+      cex.main=1, col.main="red") 
 dev.off()
 
 
