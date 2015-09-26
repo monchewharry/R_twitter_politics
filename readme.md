@@ -1,4 +1,6 @@
-this is the project on classification of twitter users relating to their political feelings.
+this is the project on classifying and visualizing twitter users relating to their political feelings.
+
+you can find the main progress in file `/obama_retweet_graph/Obamacare_Tweets`
 
 ## 1. learn R
 
