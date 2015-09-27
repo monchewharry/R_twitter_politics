@@ -1,7 +1,6 @@
 library(igraph)
 library(stringr)
 library(dplyr)
-library(base64enc)
 
 load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The result list is saved
 
