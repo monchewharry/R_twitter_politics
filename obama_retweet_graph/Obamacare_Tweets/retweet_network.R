@@ -73,7 +73,6 @@ length(vertices_list[,1])
 
 #### network graph ####  
 library(igraph)
-net<-graph.data.frame(d=edge_list,directed=T)# GRAPH OBJECT
 v<-select(vertices_list,id,weight)
 net1<-graph.data.frame(d=edge_list,v= v,directed=T)# GRAPH OBJECT
 net1
@@ -93,17 +92,4 @@ plot(net1, edge.arrow.size=.2, edge.color="orange",
 title("\nTweets with 'obamacare':  Who retweets whom",
       cex.main=1, col.main="gray95",family="mono") 
 dev.off()
-
-#TEST DATA
-e<-sample_n(edge_list, 100)
-id<-as.character(union(e$post,e$retweet_from))
-id<-as.data.frame(id);names(id)<-"id"
-v<-merge(id,vertices_list,all.x = T)
-
-net<-graph.data.frame(e,v,directed = T)
-par(mar=c(0,0,0,0))
-plot(net,
-     vertex.label=NA,
-     vertex.size=V(net)$weight/2027 +1,
-     edge.arrow.size=.3)
 
