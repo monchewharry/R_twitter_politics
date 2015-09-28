@@ -50,13 +50,16 @@ load("edge_list.RData")
 #### vertices ####
 vertices_list<-list(id=NULL,name=NULL,weight=NULL)  
 i=0
-while(T){
+system.time(while(T){
   i=i+1
   vertices_list<-rbind(vertices_list
                        ,c(obamacare[[i]]$user$id
-                          ,obamacare[[i]]$user$name,NULL))
+                          ,obamacare[[i]]$user$name
+                          ,NA))
   if(i==length(obamacare)) break
 }
+)
+i*3
 save(vertices_list,file = "vertices_list.RData")
 
 
