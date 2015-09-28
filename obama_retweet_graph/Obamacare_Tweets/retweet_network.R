@@ -72,10 +72,10 @@ fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
 
 png(filename = "retweet_graph.png")
-par(bg="gray15",mar=c(0,0,0,0))
+par(mar=c(0,0,0,0))
 plot(net,layout=circle
      ,vertex.label=V(net)$name
-     ,vertex.size=0.2
+     ,vertex.size=0.1
      ,vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5)
      ,vertex.label.family="mono"
      ,edge.arrow.size=.4
