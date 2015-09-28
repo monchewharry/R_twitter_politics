@@ -40,6 +40,14 @@ colnames(edge_list)<-c("post","retweet_from")
 edge_list<-edge_list[!is.na(edge_list[,1]),]
 edge_list<-as.data.frame(edge_list,stringsAsFactors = F)
 
+weight<-table(edge_list$retweet_from)
+weight<-as.data.frame(weight,stringsAsFactors = F);names(weight)<-c("id","weight")
+head(weight)
+vertices_list<-merge(vertices_list,weight,all.x=T)
+
+vertices_list[is.na(vertices_list$weight),3]<-0
+head(vertices_list)  
+
 #### vertices ####
 vertices_list<-t(sapply(obamacare,FUN = function(x) c(x$user$id_str,x$user$name)))
 
@@ -62,7 +70,7 @@ vertices_list<-vertices_list[!duplicated(vertices_list$id),]#delete the duplicat
 
 setdiff(union(edge_list$post,edge_list$retweet_from),vertices_list$id)#varify the completeness
 
-#weight<-table(edge_list$retweet_from)
+
 
 #### network graph ####  
 library(igraph)
@@ -74,14 +82,24 @@ circle=layout.circle(net)
 png(filename = "retweet_graph.png")
 par(mar=c(0,0,0,0))
 plot(net,layout=circle
-     ,vertex.label=V(net)$name
+     ,vertex.label=NA
      ,vertex.size=0.1
-     ,vertex.label.color=hsv(h=0, s=0, v=.95, alpha=0.5)
-     ,vertex.label.family="mono"
-     ,edge.arrow.size=.4
-     ,edge.color=hsv(h=.35, s=1, v=.7, alpha=0.4))
+     ,edge.arrow.size=.4)
+
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
       cex.main=1, col.main="gray95",family="mono") 
 dev.off()
+
+#TEST
+e<-sample_n(edge_list, 100)
+id<-as.character(union(e$post,e$retweet_from))
+v<-merge(id,vertices_list,all.x = T)
+
+net<-graph.data.frame(e,v,directed = T)
+par(mar=c(0,0,0,0))
+plot(net,
+     vertex.label=NA,
+     vertex.size=V(net)$weight/2027 +1,
+     edge.arrow.size=.3)
 
