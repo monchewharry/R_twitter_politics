@@ -1,5 +1,4 @@
 library(igraph)
-library(stringr)
 library(dplyr)
 
 load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The data list is saved
@@ -72,24 +71,36 @@ head(vertices_list)
 length(vertices_list[,1])
 
 #### network graph ####  
-library(igraph)
-v<-select(vertices_list,id,weight)
-net1<-graph.data.frame(d=edge_list,v= v,directed=T)# GRAPH OBJECT
-net1
+suppressMessages(library(igraph))
 
+#deal with the name strings
+library(stringr)
+vertices_list$name[is.na(str_length(vertices_list$name))]#multi-byte strings  
+head(iconv(vertices_list$name, "latin1", "ASCII", sub=""))  
+vertices_list$name<-iconv(vertices_list$name, "latin1", "ASCII", sub="")
+v<-vertices_list#for the reason of wrong namek
+
+# GRAPH OBJECT
+net<-graph.data.frame(d=edge_list,v=v ,directed=T)
+net
+
+#layout
 fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
 
-png(filename = "retweet_graph.png")
+png(filename = "retweet_graph2.png")
 par(mar=c(0,0,0,0))
-plot(net1, edge.arrow.size=.2, edge.color="orange",
-     vertex.color="orange", 
-     vertex.size=V(net1)$weight/max(V(net1)$weight)+1
-     ,vertex.frame.color="#ffffff",
-     vertex.label=NA, vertex.label.color="black") 
+plot(net, edge.arrow.size=.2, edge.color="orange"
+     ,vertex.label = ifelse(V(net)$weight>100,V(net)$name,NA)
+     ,vertex.color="orange"
+     ,vertex.size=V(net)$weight/max(V(net)$weight)+1
+     ,vertex.frame.color=rgb(.25, .5, .3,alpha=V(net)$weight/max(V(net)$weight))
+     ,vertex.label=NA, vertex.label.color="black") 
 
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
       cex.main=1, col.main="gray95",family="mono") 
+
 dev.off()
+
 
