@@ -81,9 +81,6 @@ vertices_list$name<-iconv(vertices_list$name, "latin1", "ASCII", sub="")
 v<-vertices_list#for the reason of wrong namek
 
 # GRAPH OBJECT
-net<-graph.data.frame(d=edge_list,v=v ,directed=T)
-net
-
 #layout
 fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
@@ -91,16 +88,23 @@ circle=layout.circle(net)
 png(filename = "retweet_graph2.png")
 par(mar=c(0,0,0,0))
 plot(net, edge.arrow.size=.2, edge.color="orange"
-     ,vertex.label = ifelse(V(net)$weight>100,V(net)$name,NA)
-     ,vertex.color="orange"
-     ,vertex.size=V(net)$weight/max(V(net)$weight)+1
-     ,vertex.frame.color=rgb(.25, .5, .3,alpha=V(net)$weight/max(V(net)$weight))
+     ,vertex.label = ifelse(V(net)$weight>1000,V(net)$name,NA)
+     ,vertex.color="red"
+     ,vertex.size=ifelse(V(net)$weight>1000,1.2,0.2)
+     ,vertex.frame.color=rgb(.25, .5, .3,alpha=ifelse(V(net)$weight>1000,1,0.2))
      ,vertex.label=NA, vertex.label.color="black") 
 
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
-      cex.main=1, col.main="gray95",family="mono") 
+      cex.main=1, col.main="black",family="mono") 
 
 dev.off()
+
+### delete the meaningless vertex  
+net<-graph.data.frame(d=edge_list,v=v ,directed=T)
+cut.off <- 1000
+net.sp <- delete.edges(net, E(net)[weight<cut.off])
+l <- layout.fruchterman.reingold(net.sp, repulserad=vcount(net)^2.1) 
+plot(net.sp, layout=l)
 
 
