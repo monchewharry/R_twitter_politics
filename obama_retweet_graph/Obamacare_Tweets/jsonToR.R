@@ -1,4 +1,4 @@
-install.packages("RJSONIO")
+# install.packages("RJSONIO")
 library(RJSONIO)
 #1w sample json data: whole one time
 # system("tar zxvf obamacare100000.JSON.zip")
@@ -31,23 +31,3 @@ close(con)
 #save(obamacare,file="obamacare.RData")
 #load("obamacare.RData")# The result list is saved
 length(obamacare)
-
-
-### small test #####
-con <- file("/Users/dcao28/Downloads/obamacare\ sample\ json.json",open = "r")
-obamacare5<-vector("list")
-i=0
-while(T){
-  i<-i+1
-  temp<-readLines(con,1)
-  if(length(temp)==0){
-    print("reach the end")
-    break
-  } else temp<-sub('.*\\t', '',temp, perl = TRUE)#get rid of the series ahead of json format
-  obamacare5[[i]]<-fromJSON(temp)
-  if(i==5) break
-}
-close(con)
-obamacare5
-unlist(oobamacare5)
-data.frame(matrix(unlist(obamacare5[[1]]),nrow = 1))

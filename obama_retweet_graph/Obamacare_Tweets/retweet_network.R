@@ -2,9 +2,9 @@ library(igraph)
 library(stringr)
 library(dplyr)
 
-load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The result list is saved
+load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The data list is saved
 length(obamacare)
-# data structure
+##### 1. data structure ####
 str(obamacare[[101010]])
 obamacare[[101010]]$text
 obamacare[[101010]]$user$screen_name# @screen_name unique
@@ -25,9 +25,7 @@ str(obamacare[[100904]])
 str(obamacare[[105505]])
 obamacare[[100904]]$retweeted_status#original (=NULL)
 
-
-
-#### edge ####
+#### make edge list ####
 edge<-function(x){
   if(identical(NULL,x$retweeted_status)) return(c(NA,NA))
   else{
@@ -43,12 +41,9 @@ edge_list<-as.data.frame(edge_list,stringsAsFactors = F)
 weight<-table(edge_list$retweet_from)
 weight<-as.data.frame(weight,stringsAsFactors = F);names(weight)<-c("id","weight")
 head(weight)
-vertices_list<-merge(vertices_list,weight,all.x=T)
 
-vertices_list[is.na(vertices_list$weight),3]<-0
-head(vertices_list)  
 
-#### vertices ####
+#### make vertices list ####
 vertices_list<-t(sapply(obamacare,FUN = function(x) c(x$user$id_str,x$user$name)))
 
 vertices2<-function(x){
@@ -58,7 +53,7 @@ vertices2<-function(x){
 
 vertices_list2<-t(sapply(obamacare,FUN = vertices2))
 vertices_list2<-vertices_list2[!is.na(vertices_list2[,1]),]
-head(vertices_list2)
+
 
 vertices_list<-rbind(vertices_list,vertices_list2)
 colnames(vertices_list)<-c("id","name")
@@ -70,30 +65,39 @@ vertices_list<-vertices_list[!duplicated(vertices_list$id),]#delete the duplicat
 
 setdiff(union(edge_list$post,edge_list$retweet_from),vertices_list$id)#varify the completeness
 
-
+#add attr weight
+vertices_list<-merge(vertices_list,weight,all.x=T)
+vertices_list[is.na(vertices_list$weight),3]<-0
+head(vertices_list)
+length(vertices_list[,1])
 
 #### network graph ####  
 library(igraph)
-net<-graph.data.frame(d=edge_list,vertices = vertices_list,directed=T)
-V(net)$name
+net<-graph.data.frame(d=edge_list,directed=T)# GRAPH OBJECT
+v<-select(vertices_list,id,weight)
+net1<-graph.data.frame(d=edge_list,v= v,directed=T)# GRAPH OBJECT
+net1
+
 fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
 
 png(filename = "retweet_graph.png")
 par(mar=c(0,0,0,0))
-plot(net,layout=circle
-     ,vertex.label=NA
-     ,vertex.size=0.1
-     ,edge.arrow.size=.4)
+plot(net1, edge.arrow.size=.2, edge.color="orange",
+     vertex.color="orange", 
+     vertex.size=V(net1)$weight/max(V(net1)$weight)+1
+     ,vertex.frame.color="#ffffff",
+     vertex.label=NA, vertex.label.color="black") 
 
 # add title
 title("\nTweets with 'obamacare':  Who retweets whom",
       cex.main=1, col.main="gray95",family="mono") 
 dev.off()
 
-#TEST
+#TEST DATA
 e<-sample_n(edge_list, 100)
 id<-as.character(union(e$post,e$retweet_from))
+id<-as.data.frame(id);names(id)<-"id"
 v<-merge(id,vertices_list,all.x = T)
 
 net<-graph.data.frame(e,v,directed = T)
