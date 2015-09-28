@@ -2,11 +2,10 @@ library(igraph)
 library(stringr)
 library(dplyr)
 
-load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The result list is saved
-
+load("/Users/dcao28/Downloads/obamacare.RData")# The result list is saved
+length(obamacare)
 # data structure
 str(obamacare[[101010]])
-attributes(obamacare[[101010]])
 obamacare[[101010]]$text
 obamacare[[101010]]$user$screen_name# @screen_name unique
 obamacare[[101010]]$user$id
@@ -24,22 +23,40 @@ obamacare[[101010]]$retweeted_status$user$id
 # }
 str(obamacare[[100904]])
 str(obamacare[[105505]])
-
 obamacare[[100904]]$retweeted_status#original (=NULL)
 
-retweeter_poster<-list(id_post=NULL,id_retweet=NULL)
+#### convert data into data.frame by package: data.table#####  
+install.packages("data.table")
+library(data.table)
+
+#### edge ####
+edge_list<-list(id_post=NULL,id_retweet=NULL)
 i=0
 while(T){
   i=i+1
   if(identical(NULL,obamacare[[i]]$retweeted_status)) next
   else{
-    retweeter_poster<-rbind(retweeter_poster,
-                            c(obamacare[[i]]$user$id,obamacare[[i]]$retweeted_status$user$id))
+    edge_list<-rbind(edge_list,
+                            c(obamacare[[i]]$user$id
+                              ,obamacare[[i]]$retweeted_status$user$id))
   }
   
   if(i==length(obamacare)) break
 }
-length(retweeter_poster)#many of them are original
+edge_list<- edge_list[-1,]
 
+load("edge_list.RData")
+
+#### vertices ####
+vertices_list<-list(id=NULL,name=NULL,weight=NULL)  
+i=0
+while(T){
+  i=i+1
+  vertices_list<-rbind(vertices_list
+                       ,c(obamacare[[i]]$user$id
+                          ,obamacare[[i]]$user$name,NULL))
+  if(i==length(obamacare)) break
+}
+save(vertices_list,file = "vertices_list.RData")
 
 
