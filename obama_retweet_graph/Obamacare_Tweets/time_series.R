@@ -16,6 +16,7 @@ time_index<-time_stamp#copy
 
 (volume<-data.frame(table(time_index)))
 volume$time_index<-as.character(volume$time_index)
+save(volume,file = "volume.RData")
 
 library(quantmod)
 tweet_volume<-as.xts(volume$Freq,as.Date(volume$time_index,format = "%m/%d/%y"))
@@ -46,7 +47,7 @@ chartSeries(tweet_volume,type="line",
             subset="2012-10-22::2012-11-08")
 dev.off()
 
-#### top 5 hashtag ####  
+#### top 5 hashtag each day ####  
 cut_point<-which(!duplicated(time_index))[-1]-1 
 cut_point<-c(0,cut_point,length(time_index))#the point where the date changes  
 
@@ -65,8 +66,10 @@ for(i in seq(length(cut_point)-1)){#collect hashtags for each tweet on each day
   hash_tags[[i]]<-hash_period
 }
 #save(hash_tags,file = "hash_tags.RData")
+
 top5<-function(x){
-  sorted<-unlist(x)[order(table(unlist(x)),decreasing = T)]
+  freq<-table(unlist(x))
+  sorted<-names(freq)[order(freq,decreasing = T)]
   if(length(sorted>5)) return(sorted[1:5])
   else return(sorted[1])
 }
@@ -79,5 +82,31 @@ A<-cbind(volume,tophash)#to merge the time series
 library(dplyr)
 A<-rename(A,volume=Freq)
 write.csv(A,file="ts_list.csv")
+
+#### top_5 hashtag freq #####  
+load("hash_tags.RData")
+freq<-table(unlist(hash_tags))
+top_5<-names(freq)[order(freq,decreasing = T)][1:6] # the top 5 # over the whole period,two of them are the same
+
+dailyfreq<-function(x){
+  freq5<-NULL
+  for(tag in top_5){
+    freq5<-c(freq5,sum(unlist(x)==tag))
+  }
+  freq5
+}
+top5_freq<-t(sapply(hash_tags,FUN = dailyfreq))
+colnames(top5_freq)<-top_5
+top5_freq<-as.data.frame(top5_freq,stringsAsFactors = F)
+head(top5_freq)
+library(dplyr)
+top5_freq<-select((mutate(top5_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)# merge the same hashtags
+
+(B<-cbind(volume,top5_freq))#to merge the time series
+B<-rename(B,volume=Freq)
+write.csv(B,file="ts_list2.csv")
+library(xts)
+plot(as.xts(B$Obamacare,as.Date(B$time_index,format = "%m/%d/%y")))
+lines(as.xts(B$tcot,as.Date(B$time_index,format = "%m/%d/%y")))
 
 
