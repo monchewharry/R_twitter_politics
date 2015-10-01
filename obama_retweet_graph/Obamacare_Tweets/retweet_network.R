@@ -4,14 +4,14 @@ library(dplyr)
 load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The data list is saved
 length(obamacare)
 ##### 1. data structure ####
-str(obamacare[[101010]])
-obamacare[[101010]]$text
-obamacare[[101010]]$user$screen_name# @screen_name unique
-obamacare[[101010]]$user$id
-obamacare[[101010]]$user$name# may be duplicated
-obamacare[[101010]]$retweeted_status$user$screen_name# retweet from
-obamacare[[101010]]$retweeted_status$user$name   
-obamacare[[101010]]$retweeted_status$user$id
+# str(obamacare[[101010]])
+# obamacare[[101010]]$text
+# obamacare[[101010]]$user$screen_name# @screen_name unique
+# obamacare[[101010]]$user$id
+# obamacare[[101010]]$user$name# may be duplicated
+# obamacare[[101010]]$retweeted_status$user$screen_name# retweet from
+# obamacare[[101010]]$retweeted_status$user$name   
+# obamacare[[101010]]$retweeted_status$user$id
 # i=0
 # while(T){
 #   i=i+1
@@ -20,9 +20,10 @@ obamacare[[101010]]$retweeted_status$user$id
 #     print(i)
 #   }else{if(i=length(obamacare)) break}
 # }
-str(obamacare[[100904]])
-str(obamacare[[105505]])
-obamacare[[100904]]$retweeted_status#original (=NULL)
+
+# str(obamacare[[100904]])
+# str(obamacare[[105505]])
+# obamacare[[100904]]$retweeted_status#original (=NULL)
 
 #### make edge list ####
 edge<-function(x){
@@ -78,12 +79,13 @@ library(stringr)
 vertices_list$name[is.na(str_length(vertices_list$name))]#multi-byte strings  
 head(iconv(vertices_list$name, "latin1", "ASCII", sub=""))  
 vertices_list$name<-iconv(vertices_list$name, "latin1", "ASCII", sub="")
-v<-vertices_list#for the reason of wrong namek
+v<-vertices_list #for the reason of wrong namek
 
 # GRAPH OBJECT
 #layout
 fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
+net<-graph.data.frame(d=edge_list,v=v ,directed=T) 
 
 png(filename = "retweet_graph2.png",width=1400,height=850)
 par(mar=c(0,0,0,0))
@@ -101,7 +103,7 @@ title("\nTweets with 'obamacare':  Who retweets whom",
 dev.off()
 
 ### delete the meaningless vertex  
-# net<-graph.data.frame(d=edge_list,v=v ,directed=T)
+
 # cut.off <- 1000
 # net.sp <- delete.edges(net, E(net)[weight<cut.off])
 # l <- layout.fruchterman.reingold(net.sp, repulserad=vcount(net)^2.1) 

@@ -1,7 +1,9 @@
 load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The data list is saved
-str(obamacare[[100]])
-obamacare[[100]]$created_at
+# str(obamacare[[100]])
+# obamacare[[100]]$created_at  
+
 library(ggplot2)
+
 #### build the volume time series####
 x1 <- strptime(obamacare[[1]]$created_at
                ,format="%a %b %d %H:%M:%S %z %Y",tz = "UTC")#see ?strftime for %
@@ -19,33 +21,34 @@ volume$time_index<-as.character(volume$time_index)
 #save(volume,file = "volume.RData")
 load("volume.RData")  
 tweet_volume<-as.xts(volume$Freq,as.Date(volume$time_index,format = "%m/%d/%y"))
+
 #### volume plot #####
 library(quantmod)
-png("tweet volume1.png")
-nf <- layout(matrix(c(1,1,1,2,3,4),2,3,byrow = TRUE), c(1,1,1), c(2,1), TRUE)
-
-plot(tweet_volume,main="tweet volume over 3 periods")
-plot(tweet_volume["/2012-04-03"],main="1st period")
-plot(tweet_volume["2012-06-19::2012-07-07"],main="2nd period")
-plot(tweet_volume["2012-10-22::2012-11-08"],main="3rd peirod")
-dev.off()
-
-png("tweet volume2.png")
-chartSeries(tweet_volume,type="line")
-dev.off()
-
-png("volume ~2012-04-03.png")
-chartSeries(tweet_volume,type="line",
-            subset="/2012-04-03")
-dev.off()
-png("volume 2012-06-19~2012-07-07.png")
-chartSeries(tweet_volume,type="line",
-            subset="2012-06-19::2012-07-07")
-dev.off()
-png("volume 2012-10-22~2012-11-08.png")
-chartSeries(tweet_volume,type="line",
-            subset="2012-10-22::2012-11-08")
-dev.off()
+# png("tweet volume1.png")
+# nf <- layout(matrix(c(1,1,1,2,3,4),2,3,byrow = TRUE), c(1,1,1), c(2,1), TRUE)
+# 
+# plot(tweet_volume,main="tweet volume over 3 periods")
+# plot(tweet_volume["/2012-04-03"],main="1st period")
+# plot(tweet_volume["2012-06-19::2012-07-07"],main="2nd period")
+# plot(tweet_volume["2012-10-22::2012-11-08"],main="3rd peirod")
+# dev.off()
+# 
+# png("tweet volume2.png")
+# chartSeries(tweet_volume,type="line")
+# dev.off()
+# 
+# png("volume ~2012-04-03.png")
+# chartSeries(tweet_volume,type="line",
+#             subset="/2012-04-03")
+# dev.off()
+# png("volume 2012-06-19~2012-07-07.png")
+# chartSeries(tweet_volume,type="line",
+#             subset="2012-06-19::2012-07-07")
+# dev.off()
+# png("volume 2012-10-22~2012-11-08.png")
+# chartSeries(tweet_volume,type="line",
+#             subset="2012-10-22::2012-11-08")
+# dev.off()
 
 #### top 5 hashtag each day ####  
 cut_point<-which(!duplicated(time_index))[-1]-1 
@@ -115,30 +118,17 @@ SCOTUS<-as.xts(B$SCOTUS,as.Date(B$time_index,format = "%m/%d/%y"))
 p2<-as.xts(B$p2,as.Date(B$time_index,format = "%m/%d/%y"))
 healthcare<-as.xts(B$healthcare,as.Date(B$time_index,format = "%m/%d/%y"))
 
-png(filename = "daily freq of top5#.png")
-par(lwd=2)
-plot(Obamacare,main="daily freq of top5#",lty=1)
-lines(tcot,col=2,lty=2)
-lines(SCOTUS,col=3,lty=3)
-lines(p2,col=4,lty=4)
-lines(healthcare,col=5,lty=5)
-legend("topright",col=1:5,lty=1:5,top_5[-4])
-dev.off()
-
-
-
-
 #### ggplot2 ##### 
 b<-B[c(-2)]
 b$time_index<-as.Date(b$time_index,format = "%m/%d/%y")
 b1<-melt(b,id.vars = c("time_index"))
 b1<-cbind(b1,period=c(rep(1,18),rep(2,19),rep(3,18)))
+png("daily freq of top5#.png",width=1500,height=850)
 ggplot(b1) + geom_line(aes(x=time_index, y=value, colour=variable)) +
   scale_colour_manual(values=c(1,2,3,4,6))+
   facet_wrap( ~ period,scale="free_x")+
   labs( title = "daily freq of top5#")
-
-
+dev.off()
 
 # respective picture  without unuseful period   
 # ggplot(b, aes(time_index, Obamacare)) +xlab("period")+
@@ -147,8 +137,6 @@ ggplot(b1) + geom_line(aes(x=time_index, y=value, colour=variable)) +
 period1<-"2012-03-17::2012-04-03"
 period2<-"2012-06-19::2012-07-07"
 period3<-"2012-10-22::2012-11-08"
-
-
 
 chartSeries(Obamacare,subset =period1)
 chartSeries(Obamacare,subset =period2)
