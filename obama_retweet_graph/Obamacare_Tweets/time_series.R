@@ -1,7 +1,7 @@
 load("/Users/CDX/Google\ Drive/twitter_politics_data/obamacare.RData")# The data list is saved
 str(obamacare[[100]])
 obamacare[[100]]$created_at
-
+library(ggplot2)
 #### build the volume time series####
 x1 <- strptime(obamacare[[1]]$created_at
                ,format="%a %b %d %H:%M:%S %z %Y",tz = "UTC")#see ?strftime for %
@@ -16,11 +16,11 @@ time_index<-time_stamp#copy
 
 (volume<-data.frame(table(time_index)))
 volume$time_index<-as.character(volume$time_index)
-save(volume,file = "volume.RData")
-
-library(quantmod)
+#save(volume,file = "volume.RData")
+load("volume.RData")  
 tweet_volume<-as.xts(volume$Freq,as.Date(volume$time_index,format = "%m/%d/%y"))
 #### volume plot #####
+library(quantmod)
 png("tweet volume1.png")
 nf <- layout(matrix(c(1,1,1,2,3,4),2,3,byrow = TRUE), c(1,1,1), c(2,1), TRUE)
 
@@ -99,6 +99,7 @@ top5_freq<-t(sapply(hash_tags,FUN = dailyfreq))
 colnames(top5_freq)<-top_5
 top5_freq<-as.data.frame(top5_freq,stringsAsFactors = F)
 head(top5_freq)
+
 library(dplyr)
 top5_freq<-select((mutate(top5_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)# merge the same hashtags
 
@@ -106,16 +107,69 @@ top5_freq<-select((mutate(top5_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)#
 B<-rename(B,volume=Freq)
 write.csv(B,file="ts_list2.csv")
 library(xts)
+
+# overlaid picture
+Obamacare<-as.xts(B$Obamacare,as.Date(B$time_index,format = "%m/%d/%y"))
+tcot<-as.xts(B$tcot,as.Date(B$time_index,format = "%m/%d/%y"))
+SCOTUS<-as.xts(B$SCOTUS,as.Date(B$time_index,format = "%m/%d/%y"))
+p2<-as.xts(B$p2,as.Date(B$time_index,format = "%m/%d/%y"))
+healthcare<-as.xts(B$healthcare,as.Date(B$time_index,format = "%m/%d/%y"))
+
 png(filename = "daily freq of top5#.png")
 par(lwd=2)
-plot(as.xts(B$Obamacare,as.Date(B$time_index,format = "%m/%d/%y")),main="daily freq of top5#",lty=1)
-lines(as.xts(B$tcot,as.Date(B$time_index,format = "%m/%d/%y")),col=2,lty=2)
-lines(as.xts(B$SCOTUS,as.Date(B$time_index,format = "%m/%d/%y")),col=3,lty=3)
-lines(as.xts(B$p2,as.Date(B$time_index,format = "%m/%d/%y")),col=4,lty=4)
-lines(as.xts(B$healthcare,as.Date(B$time_index,format = "%m/%d/%y")),col=5,lty=5)
+plot(Obamacare,main="daily freq of top5#",lty=1)
+lines(tcot,col=2,lty=2)
+lines(SCOTUS,col=3,lty=3)
+lines(p2,col=4,lty=4)
+lines(healthcare,col=5,lty=5)
 legend("topright",col=1:5,lty=1:5,top_5[-4])
 dev.off()
 
-library(ggplot2)
-oplot<-ggplot(as.xts(B$Obamacare,as.Date(B$time_index,format = "%m/%d/%y")))
-oplot + geom_line()
+
+
+
+#### ggplot2 ##### 
+b<-B[c(-2)]
+b$time_index<-as.Date(b$time_index,format = "%m/%d/%y")
+b1<-melt(b,id.vars = c("time_index"))
+b1<-cbind(b1,period=c(rep(1,18),rep(2,19),rep(3,18)))
+ggplot(b1) + geom_line(aes(x=time_index, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1,2,3,4,6))+
+  facet_wrap( ~ period,scale="free_x")+
+  labs( title = "daily freq of top5#")
+
+
+
+# respective picture  without unuseful period   
+# ggplot(b, aes(time_index, Obamacare)) +xlab("period")+
+#   ylab("hashtags")+
+#   geom_line(lty = 1,colour = 1)#delete useless period
+period1<-"2012-03-17::2012-04-03"
+period2<-"2012-06-19::2012-07-07"
+period3<-"2012-10-22::2012-11-08"
+
+
+
+chartSeries(Obamacare,subset =period1)
+chartSeries(Obamacare,subset =period2)
+chartSeries(Obamacare,subset =period3)
+
+chartSeries(tcot,subset =period1)
+chartSeries(tcot,subset =period2)
+chartSeries(tcot,subset =period3)
+
+chartSeries(SCOTUS,subset =period1)
+chartSeries(SCOTUS,subset =period2)
+chartSeries(SCOTUS,subset =period3)
+
+chartSeries(p2,subset =period1)
+chartSeries(p2,subset =period2)
+chartSeries(p2,subset =period3)
+
+chartSeries(healthcare,subset =period1)
+chartSeries(healthcare,subset =period2)
+chartSeries(healthcare,subset =period3)
+
+t1<-select(B,-volume)[]
+ggplot(t1)
+
