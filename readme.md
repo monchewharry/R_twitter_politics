@@ -2,21 +2,25 @@ this is the project on classifying and visualizing twitter users relating to the
 
 you can find the main progress in file `/obama_retweet_graph/Obamacare_Tweets`
 
+Here are the tools I have used for this project.
+
 ## 1. learn R
 
-**The art of R programming**  
-
+- **The art of R programming**  
+- Over Stackflow
 
 ## 2. data visualization 
 
 - <http://kateto.net/network-visualization>  
-- package:ggplot2 , igraph  
+- package:ggplot2 , igraph , quantmod 
 
 ## 3. text mining  
 
-package: tm  
+- package: tm  
 
-## 4.big data analysis  
+## 4.big data manipulation 
 
-package:dplyr
+- package:dplyr, reshape2, data.table
 
+## 5. tidy code  
+- package: magrittr

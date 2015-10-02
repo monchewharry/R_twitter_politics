@@ -89,6 +89,7 @@ write.csv(A,file="ts_list.csv")
 #### top_5 hashtag freq #####  
 load("hash_tags.RData")
 freq<-table(unlist(hash_tags))
+
 top_5<-names(freq)[order(freq,decreasing = T)][1:6] # the top 5 # over the whole period,two of them are the same
 
 dailyfreq<-function(x){
@@ -99,6 +100,7 @@ dailyfreq<-function(x){
   freq5
 }
 top5_freq<-t(sapply(hash_tags,FUN = dailyfreq))
+
 colnames(top5_freq)<-top_5
 top5_freq<-as.data.frame(top5_freq,stringsAsFactors = F)
 head(top5_freq)
@@ -106,12 +108,13 @@ head(top5_freq)
 library(dplyr)
 top5_freq<-select((mutate(top5_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)# merge the same hashtags
 
-(B<-cbind(volume,top5_freq))#to merge the time series
+(B<-cbind(volume,top5_freq))#to load volume first!
 B<-rename(B,volume=Freq)
 write.csv(B,file="ts_list2.csv")
-library(xts)
+
 
 # overlaid picture
+library(xts)
 Obamacare<-as.xts(B$Obamacare,as.Date(B$time_index,format = "%m/%d/%y"))
 tcot<-as.xts(B$tcot,as.Date(B$time_index,format = "%m/%d/%y"))
 SCOTUS<-as.xts(B$SCOTUS,as.Date(B$time_index,format = "%m/%d/%y"))
