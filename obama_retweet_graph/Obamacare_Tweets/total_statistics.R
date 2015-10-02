@@ -46,7 +46,14 @@ for(i in seq(length(top10_retweet$id))){
 }
 rownames(top10_retweet)<-NULL
 
-write.csv(top10_retweet,file = "top10_retweet.csv")
+write.csv(top10_retweet,file = "top10_retweet.csv")  
+
 ###### the top 5 (or 10) most @mentioned users (and number of times mentioned)#####
+user_mentioned<-sapply(obamacare, function(x) x$entities$user_mentions)
+user_mentioned[[101]]
+
 # the top 5 (or 10) URLs mentioned (and # times mentioned)
+url_mentioned<-sapply(obamacare, function(x) x$entities$urls)
+
 # the top 5 (or 10) locations (and # tweets from each)
+user_location<-sapply(obamacare, function(x) x$user$location)
