@@ -50,8 +50,8 @@ library(quantmod)
 #             subset="2012-10-22::2012-11-08")
 # dev.off()
 
-#### 2. daily top5 hashtag ####
-A<-read.csv("ts_list.csv",header = T)
+#### 2. daily top50 hashtag ####
+A<-read.csv("daily top5 #.csv",header = T)
 
 # cut_point<-which(!duplicated(time_index))[-1]-1 
 # cut_point<-c(0,cut_point,length(time_index))#the point where the date changes  
@@ -86,33 +86,33 @@ A<-read.csv("ts_list.csv",header = T)
 # A<-cbind(volume,tophash)#to merge the time series
 # library(dplyr)
 # A<-rename(A,volume=Freq)
-# write.csv(A,file="ts_list.csv")
+# write.csv(A,file="daily top5 #.csv")
 
-#### 3. top_5 hashtag's daily freq #####
+#### 3. top_50 hashtag's daily freq #####
 B<-read.csv("ts_list2.csv")
 
-# load("hash_tags.RData") 
-# freq<-table(unlist(hash_tags))
-# top_5<-names(freq)[order(freq,decreasing = T)][1:6] # the top 5 # over the whole period,two of them are the same
-# 
-# dailyfreq<-function(x){
-#   freq5<-NULL
-#   for(tag in top_5){
-#     freq5<-c(freq5,sum(unlist(x)==tag))
-#   }
-#   freq5
-# }
-# top5_freq<-t(sapply(hash_tags,FUN = dailyfreq))
-# 
-# colnames(top5_freq)<-top_5
-# top5_freq<-as.data.frame(top5_freq,stringsAsFactors = F)
-# head(top5_freq)
-# 
-# top5_freq<-select((mutate(top5_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)# merge the same hashtags
-# 
-# (B<-cbind(volume,top5_freq))#to load volume first!
-# B<-rename(B,volume=Freq)
-# write.csv(B,file="ts_list2.csv")
+load("hash_tags.RData") 
+freq<-table(unlist(hash_tags))
+top_50<-names(freq)[order(freq,decreasing = T)][1:50] # the top 5 # over the whole period,two of them are the same
+
+dailyfreq<-function(x){
+  freq50<-NULL
+  for(tag in top_50){
+    freq50<-c(freq50,sum(unlist(x)==tag))
+  }
+  freq50
+}
+top50_freq<-t(sapply(hash_tags,FUN = dailyfreq))
+
+colnames(top50_freq)<-top_50
+top50_freq<-as.data.frame(top50_freq,stringsAsFactors = F)
+head(top50_freq)
+
+top50_freq<-select((mutate(top50_freq,Obamacare=Obamacare+ObamaCare)),-ObamaCare)# merge the same hashtags
+
+(B<-cbind(volume,top50_freq))#to load volume first!
+B<-rename(B,volume=Freq)
+write.csv(B,file="ts_list2.csv")
 
 
 # overlaid picture
@@ -128,9 +128,9 @@ b<-B[c(-2)]
 b$time_index<-as.Date(b$time_index,format = "%m/%d/%y")
 b1<-melt(b,id.vars = c("time_index"))
 b1<-cbind(b1,period=c(rep(1,18),rep(2,19),rep(3,18)))
-png("daily freq of top5#.png",width=1500,height=850)
+png("daily freq of top50#.png",width=1500,height=850)
 ggplot(b1) + geom_line(aes(x=time_index, y=value, colour=variable)) +
-  scale_colour_manual(values=c(1,2,3,4,6))+
+  scale_colour_manual(values=seq(50))+
   facet_wrap( ~ period,scale="free_x")+
   labs( title = "daily freq of top5#")
 dev.off()
