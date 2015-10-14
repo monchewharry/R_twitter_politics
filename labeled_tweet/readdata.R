@@ -30,4 +30,6 @@ tweet_conserv<-obamacare_labeled[null.loc==FALSE] #find the conservation
 length(obamacare_labeled)==length(tweet_conserv)+length(tweet_liberal)
 
 save(tweet_conserv,file = "tweet_conserv.RData")
-save(tweet_liberal ,file = "tweet_liberal.RData")
+save(tweet_liberal ,file = "tweet_liberal.RData")  
+
+
