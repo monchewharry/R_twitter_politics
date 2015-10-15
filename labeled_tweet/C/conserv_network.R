@@ -67,7 +67,7 @@ fruch = layout.fruchterman.reingold(net)
 circle=layout.circle(net)
 
 
-png(filename = "conserv retweet_graph2.png",width=1400,height=850)
+png(filename = "image/conserv retweet_graph2.png",width=1400,height=850)
 par(mar=c(0,0,0,0))
 plot(net, edge.arrow.size=.2, edge.color="orange"
      ,vertex.label = ifelse(V(net)$weight>1000,V(net)$name,NA)
