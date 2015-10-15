@@ -107,12 +107,12 @@ write.csv(A,file="conserv daily top5 #.csv")
 # top50_freq<-select((mutate(top50_freq,Obamacare=Obamacare+ObamaCare+obamacare+OBAMACARE)),-c(ObamaCare,obamacare,OBAMACARE))# merge the same hashtags
 # 
 
-(B<-cbind(volume_conserv,top50_freq))#to load volume first!
-write.csv(B,file="convserv top50# freq.csv")
+#(B<-cbind(volume_conserv,top50_freq))#to load volume first!
+#write.csv(B,file="convserv top50# freq.csv")
 B<-read.csv("convserv top50# freq.csv",header = T)
 
 ## ggplot2
-b<-B[-1]
+b<-B[c(-1,-3)]
 b$time_index<-as.Date(b$time_index,format = "%m/%d/%y")
 library(reshape2)
 b1<-melt(b,id.vars = c("time_index"))
