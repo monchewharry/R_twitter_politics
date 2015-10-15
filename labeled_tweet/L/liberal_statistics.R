@@ -22,7 +22,7 @@ load("volume_liberal.RData")
 ##plot
 # library(quantmod)
 # liberal_volume<-as.xts(volume_liberal$Freq,as.Date(volume_liberal$time_index,format = "%m/%d/%y"))
-# png("liberal volume1.png")
+# png("image/liberal volume1.png")
 # nf <- layout(matrix(c(1,1,1,2,3,4),2,3,byrow = TRUE), c(1,1,1), c(2,1), TRUE)
 # 
 # plot(liberal_volume,main="liberal tweet volume over 3 periods")
@@ -31,19 +31,19 @@ load("volume_liberal.RData")
 # plot(liberal_volume["2012-10-22::2012-11-08"],main="3rd peirod")
 # dev.off()
 # 
-# png("liberal tweet volume2.png")
+# png("image/liberal tweet volume2.png")
 # chartSeries(liberal_volume,type="line")
 # dev.off()
 # 
-# png("liberal tweet volume ~2012-04-03.png")
+# png("image/liberal tweet volume ~2012-04-03.png")
 # chartSeries(liberal_volume,type="line",
 #             subset="/2012-04-03")
 # dev.off()
-# png("liberal tweet volume 2012-06-19~2012-07-07.png")
+# png("image/liberal tweet volume 2012-06-19~2012-07-07.png")
 # chartSeries(liberal_volume,type="line",
 #             subset="2012-06-19::2012-07-07")
 # dev.off()
-# png("liberal tweet volume 2012-10-22~2012-11-08.png")
+# png("image/liberal tweet volume 2012-10-22~2012-11-08.png")
 # chartSeries(liberal_volume,type="line",
 #             subset="2012-10-22::2012-11-08")
 # dev.off()
@@ -118,7 +118,7 @@ library(reshape2)
 b1<-melt(b,id.vars = c("time_index"))
 
 b1<-cbind(b1,period=c(rep(1,18),rep(2,19),rep(3,18)))
-png("daily freq of liberal top50#.png",width=1500,height=850)
+png("image/daily freq of liberal top50#.png",width=1500,height=850)
 ggplot(b1) + geom_line(aes(x=time_index, y=value, colour=variable)) +
   scale_colour_manual(values=seq(50))+
   facet_wrap( ~ period,scale="free_x")+
