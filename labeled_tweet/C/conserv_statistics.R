@@ -174,8 +174,25 @@ rownames(top50_retweet)<-NULL
 write.csv(top50_retweet,file = "conserv's top50_retweet.csv")  
 
 ###### the top 5 (or 10) most @mentioned users (and number of times mentioned)#####
-user_mentioned<-sapply(tweet_conserv, function(x) x$entities$user_mentions)
-user_mentioned[[101]]
+# user_mentioned<-lapply(tweet_conserv, function(x) x$entities$user_mentions)
+# mentioned<-lapply(user_mentioned, function(x) sapply(x, function(x) c(x$id_str,x$name) ) )
+# null.loc<-sapply(mentioned,function(x) is.null(unlist(x)))
+# mentioned<-mentioned[!null.loc]
+# mentioned<-matrix(unlist(mentioned),nrow=2,byrow=F)
+# rownames(mentioned)<-c("id","name")
+# mentioned<-as.data.frame(t(mentioned),stringsAsFactors = F)
+# 
+# freq<-data.frame(table(mentioned$id))
+# freq<-arrange(freq,desc(Freq))
+# names(freq)<-c("id","freq")
+# freq<-merge(freq,mentioned)
+# freq<-freq[!duplicated(freq$id),]
+# freq<-arrange(freq,desc(freq))
+# mentioned_freq<-freq
+# write.csv(mentioned_freq,file = "most_mentioned_freq.csv")
+mentioned_freq<-read.csv("most_mentioned_freq.csv",colClasses=c("NULL",NA,NA,NA),stringsAsFactors = F)
+head(mentioned_freq)
+
 
 # the top 5 (or 10) URLs mentioned (and # times mentioned)
 url_mentioned<-sapply(tweet_conserv, function(x) x$entities$urls)
