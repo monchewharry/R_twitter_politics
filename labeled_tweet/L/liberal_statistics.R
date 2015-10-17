@@ -190,6 +190,16 @@ write.csv(top50_retweet,file = "liberal's top50_retweet.csv")
 #write.csv(mentioned_freq,file = "mentiomentioned_freq.csv")
 mentioned_freq<-read.csv("most_mentioned_freq.csv",colClasses=c("NULL",NA,NA,NA),stringsAsFactors = F)
 head(mentioned_freq)
+t<-mentioned_freq$freq
+names(t)<-mentioned_freq$name 
+t<-t[t>500]
+png("liberal's most mentioned users.png")
+mp<-barplot(as.table(t),axes = FALSE, axisnames = FALSE)
+labels<-names(t)
+text(mp, par("usr")[3], labels = labels, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
+axis(2)
+title("liberal's most mentioned users")
+dev.off()
 
 
 # the top 5 (or 10) URLs mentioned (and # times mentioned)
