@@ -16,7 +16,7 @@ Here are the tools I have used for this project.
 
 - package: tm  
 
-## 4.big data manipulation 
+## 4.data manipulation 
 
 - package:dplyr, reshape2, data.table
 
