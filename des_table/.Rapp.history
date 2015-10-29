@@ -1,0 +1,7 @@
+setwd("/Users/dcao28/R_twitter_politics/des_table")
+load("obamacare_labeled.RData")
+length(load)
+length(obamacare_labeled)
+install.packages(c("xlsx","dplyr"))
+229+308
+362+174
