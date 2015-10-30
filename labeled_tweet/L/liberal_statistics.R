@@ -67,7 +67,17 @@ load("volume_liberal.RData")
 # }
 # liberal_hashtags<-hash_tags
 # save(liberal_hashtags,file = "liberal_hashtags.RData")
-load("liberal_hashtags.RData")
+# load("../L/liberal_hashtags.RData")
+# liberal_hashtags[[1]]
+# lower<-function(x){
+#   vec<-unlist(x)
+#   vec_lower<-tolower(iconv(vec, "latin1", "UTF-8", sub=""))
+# }
+# liberal_lowerhash<-lapply(liberal_hashtags,lower)
+# save(liberal_lowerhash,file = "../L/liberal_lowerhash.RData")
+load("../L/liberal_lowerhash.RData")
+
+
 
 top5<-function(x){
   freq<-table(unlist(x))
@@ -86,25 +96,24 @@ write.csv(A,file="liberal daily top5 #.csv")
 
 #### 3. top_50 hashtag's daily freq #####
 
-# load("liberal_hashtags.RData") 
-# freq<-table(unlist(liberal_hashtags))
-# top_50<-names(freq)[order(freq,decreasing = T)][1:50] # the top 5 # over the whole period,two of them are the same
-# 
-# dailyfreq<-function(x){
-#   freq50<-NULL
-#   for(tag in top_50){
-#     freq50<-c(freq50,sum(unlist(x)==tag))
-#   }
-#   freq50
-# }
-# top50_freq<-t(sapply(liberal_hashtags,FUN = dailyfreq))
-# 
-# colnames(top50_freq)<-top_50
-# top50_freq<-as.data.frame(top50_freq,stringsAsFactors = F)
-# head(top50_freq)
-# 
-# top50_freq<-select((mutate(top50_freq,Obamacare=Obamacare+ObamaCare+obamacare+OBAMACARE)),-c(ObamaCare,obamacare,OBAMACARE))# merge the same hashtags
-# 
+load("liberal_lowerhash.RData")
+load("volume_liberal.RData")
+freq<-table(unlist(liberal_lowerhash))
+top_50<-names(freq)[order(freq,decreasing = T)][1:50] # the top 5 # over the whole period,two of them are the same
+
+dailyfreq<-function(x){
+  freq50<-NULL
+  for(tag in top_50){
+    freq50<-c(freq50,sum(unlist(x)==tag))
+  }
+  freq50
+}
+top50_freq<-t(sapply(liberal_lowerhash,FUN = dailyfreq))
+
+colnames(top50_freq)<-top_50
+top50_freq<-as.data.frame(top50_freq,stringsAsFactors = F)
+head(top50_freq)
+dim(top50_freq)
 
 (B<-cbind(volume_liberal,top50_freq))#to load volume first!
 write.csv(B,file="liberal top50# freq.csv")

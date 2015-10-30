@@ -69,7 +69,15 @@ load("volume_conserv.RData")
 # }
 # conserv_hashtags<-hash_tags
 # save(conserv_hashtags,file = "conserv_hashtags.RData")
-load("conserv_hashtags.RData")
+#load("conserv_hashtags.RData")
+# conserv_hashtags[[1]]
+# lower<-function(x){
+#   vec<-unlist(x)
+#   vec_lower<-tolower(iconv(vec, "latin1", "UTF-8", sub=""))
+# }
+# conserv_lowerhash<-lapply(conserv_hashtags,lower)
+# save(conserv_lowerhash,file = "conserv_lowerhash.RData")
+load("conserv_lowerhash.RData")
 
 top5<-function(x){
   freq<-table(unlist(x))
@@ -88,7 +96,7 @@ write.csv(A,file="conserv daily top5 #.csv")
 #### 3. top_50 hashtag's daily freq #####
 
 # load("conserv_hashtags.RData") 
-# freq<-table(unlist(conserv_hashtags))
+# freq<-table(unlist(conserv_lowerhash))
 # top_50<-names(freq)[order(freq,decreasing = T)][1:50] # the top 5 # over the whole period,two of them are the same
 # 
 # dailyfreq<-function(x){
@@ -98,17 +106,14 @@ write.csv(A,file="conserv daily top5 #.csv")
 #   }
 #   freq50
 # }
-# top50_freq<-t(sapply(conserv_hashtags,FUN = dailyfreq))
+# top50_freq<-t(sapply(conserv_lowerhash,FUN = dailyfreq))
 # 
 # colnames(top50_freq)<-top_50
 # top50_freq<-as.data.frame(top50_freq,stringsAsFactors = F)
 # head(top50_freq)
 # 
-# top50_freq<-select((mutate(top50_freq,Obamacare=Obamacare+ObamaCare+obamacare+OBAMACARE)),-c(ObamaCare,obamacare,OBAMACARE))# merge the same hashtags
-# 
-
-#(B<-cbind(volume_conserv,top50_freq))#to load volume first!
-#write.csv(B,file="convserv top50# freq.csv")
+# (B<-cbind(volume_conserv,top50_freq))#to load volume first! to make into ts
+# write.csv(B,file="convserv top50# freq.csv")
 B<-read.csv("convserv top50# freq.csv",header = T)
 
 ## ggplot2
