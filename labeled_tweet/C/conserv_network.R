@@ -1,7 +1,7 @@
 setwd("/Users/CDX/R_twitter_politics/labeled_tweet/C")
 library(igraph)
 library(dplyr)
-load("tweet_conserv.RData")# The data list is saved
+#load("tweet_conserv.RData")# The data list is saved
 
 #### make edge list ####
 edge<-function(x){
@@ -21,10 +21,10 @@ weight<-as.data.frame(weight,stringsAsFactors = F);names(weight)<-c("id","weight
 
 
 #### make vertices list ####
-vertices_list<-t(sapply(tweet_conserv,FUN = function(x) c(x$user$id_str,x$user$name)))
+vertices_list<-t(sapply(tweet_conserv,FUN = function(x) c(x$user$id_str,x$user$screen_name)))
 
 vertices2<-function(x){
-  if(!identical(NULL,x$retweeted_status)) return(c(x$retweeted_status$user$id_str,x$retweeted_status$user$name))
+  if(!identical(NULL,x$retweeted_status)) return(c(x$retweeted_status$user$id_str,x$retweeted_status$user$screen_name))
   else return(c(NA,NA))
 }
 
