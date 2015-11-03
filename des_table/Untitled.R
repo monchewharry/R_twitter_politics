@@ -96,7 +96,7 @@ des<-data.frame(user_num=c(nrow(iden), nrow(filter(iden,ideology=="C")),nrow(fil
            , following_num= rep(NA,3)
            , total_tweets=c(length(tweet_conserv)+length(tweet_conserv),length(tweet_liberal),length(tweet_liberal)) 
            , total_tweet1=c(sum(volume[1:18,3]),sum(volume[1:18,1]),sum(volume[1:18,2])) 
-           ,total_tweet2=c(sum(volume[19:37,3]),sum(volume[19:37,1]),sum(volume[19:37,2])) 
+           , total_tweet2=c(sum(volume[19:37,3]),sum(volume[19:37,1]),sum(volume[19:37,2])) 
            , total_tweet3=c(sum(volume[38:55,3]),sum(volume[38:55,1]),sum(volume[38:55,2]))  
            , retweets_perc=c(44.20,43.34,45.58)
            , retweets_aver=c(46,38,58) 
