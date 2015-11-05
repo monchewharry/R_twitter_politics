@@ -40,7 +40,7 @@ load("/Users/dcao28/R_twitter_politics/labeled_tweet/L/volume_liberal.RData")
 # filter(new,is.na(id) & elite==TRUE)#check
 # write.csv(new,"new_iden.csv")  
 # 
-iden<-read.csv("new_iden.csv",header = TRUE)
+iden<-read.csv("new_iden.csv" ,header = TRUE)
 iden<-select(iden,-(ideology.y))
 iden<-rename(iden,ideology=ideology.x)  
 head(iden)
@@ -50,33 +50,34 @@ iden<-filter(iden,elite==TRUE)
 load("~/Downloads/tweet_conserv.RData")
 load("~/Downloads/tweet_liberal.RData")
 
-add_elite<-function(x){
-  if((x$user$screen_name %in% iden$screen_name) ||
-     (x$user$id_str %in% iden$id)){
-    x$elite<-TRUE
-  }else{
-    x$elite<-FALSE
-  }
-  return(x)
-}
-
-tweet_conserv<-lapply(tweet_conserv, FUN = add_elite)
-tweet_liberal<-lapply(tweet_liberal, FUN = add_elite)
+# add_elite<-function(x){
+#   if((x$user$screen_name %in% iden$screen_name) ||
+#      (x$user$id_str %in% iden$id)){
+#     x$elite<-TRUE
+#   }else{
+#     x$elite<-FALSE
+#   }
+#   return(x)
+# }
+# 
+# tweet_conserv<-lapply(tweet_conserv, FUN = add_elite)
+# tweet_liberal<-lapply(tweet_liberal, FUN = add_elite)
 
 # tweet_conserv_elite<- sapply(tweet_conserv, function(x) x$elite)
 # save(tweet_conserv_elite,file = "conserv_elite.RData")
 load("conserv_elite.RData")
-tweet_conserv<-tweet_conserv[tweet_conserv_elite]
+tweet_conserv_elite<-tweet_conserv[tweet_conserv_elite]
 
 # tweet_liberal_elite<-sapply(tweet_liberal, function(x) x$elite)
 # save(tweet_liberal_elite,file = "liberal_elite.RData")
 load("liberal_elite.RData")
-tweet_liberal<-tweet_liberal[tweet_liberal_elite]
+tweet_liberal_elite<-tweet_liberal[tweet_liberal_elite]
 
 ######new volume for elites #######
-# x1 <- strptime(tweet_conserv[[1]]$created_at
+# x1 <- strptime(tweet_liberal_elite[[1]]$created_at
 #                ,format="%a %b %d %H:%M:%S %z %Y",tz = "UTC")#see ?strftime for %
-# time_stamp<-sapply(tweet_conserv,FUN = function(x) return(as.POSIXct(x$created_at,
+# 
+# time_stamp<-sapply(tweet_liberal_elite,FUN = function(x) return(as.POSIXct(x$created_at,
 #                                                                      format="%a %b %d %H:%M:%S %z %Y",
 #                                                                      tz = "UTC")))
 # 
@@ -87,52 +88,51 @@ tweet_liberal<-tweet_liberal[tweet_liberal_elite]
 # 
 # (volume<-data.frame(table(time_index)))
 # volume$time_index<-as.character(volume$time_index)
-# volume_conserv<-volume
-# save(volume_conserv,file = "volume_conserv.RData")
+# volume_liberal<-volume
+# save(volume_liberal,file = "volume_liberal.RData")
+
 load("volume_conserv.RData")
 load("volume_liberal.RData")
-dim(volume_conserv)
+dim(volume_conserv);dim(volume_liberal)
 volume_conserv<-rename(volume_conserv,Freq.c=Freq)
 volume_liberal<-rename(volume_liberal,Freq.l=Freq)
 head(volume_conserv);head(volume_liberal)
 
 volume<-merge(volume_conserv,volume_liberal,all = T)
 volume[is.na(volume)]<-0
-volume<-mutate(volume,sum=Freq.c+Freq.l)
+(volume<-mutate(volume,sum=Freq.c+Freq.l))
+
 ###############table 1 ################## 
 
 head(volume)
 head(iden)
-tweet_conserv[[123]]$retweeted_status
+tweet_conserv_elite[[123]]$retweeted_status
 
 #conserv retweet tweets percentage
-total_id<-lapply(tweet_conserv,FUN = function(x) x$retweeted_status$id_str)
+total_id<-lapply(tweet_conserv_elite,FUN = function(x) x$retweeted_status$id_str)
 null_loc<-sapply(total_id,FUN=function(x) is.null(x))
 (length(null_loc)-sum(null_loc))/length(null_loc)
-
 #liberal retweet tweets percentage
-total_id<-lapply(tweet_liberal,FUN = function(x) x$retweeted_status$id_str)
+total_id<-lapply(tweet_liberal_elite,FUN = function(x) x$retweeted_status$id_str)
 null_loc<-sapply(total_id,FUN=function(x) is.null(x))
 (length(null_loc)-sum(null_loc))/length(null_loc)
 
 #convert average retweet per tweet  
-ret_num1<-lapply(tweet_conserv,FUN = function(x) x$retweet_count)
-sum(unlist(ret_num1))/length(tweet_conserv)
-
-
+ret_num1<-lapply(tweet_conserv_elite,FUN = function(x) x$retweet_count)
+sum(unlist(ret_num1))/length(tweet_conserv_elite)
 #liberal average retweet per tweet  
-ret_num2<-lapply(tweet_liberal,FUN = function(x) x$retweet_count)
-sum(unlist(ret_num2))/length(tweet_liberal)  
+ret_num2<-lapply(tweet_liberal_elite,FUN = function(x) x$retweet_count)
+sum(unlist(ret_num2))/length(tweet_liberal_elite)  
 
-(sum(unlist(ret_num1))+sum(unlist(ret_num2)))/(length(tweet_liberal)+length(tweet_conserv))
+(sum(unlist(ret_num1))+sum(unlist(ret_num2)))/(length(tweet_liberal_elite)+length(tweet_conserv_elite))
 
 # conserv mention percentage  
-total_id<-lapply(tweet_conserv,FUN = function(x) x$entities$user_mentions)
+total_id<-lapply(tweet_conserv_elite,FUN = function(x) x$entities$user_mentions)
 null_loc1<-sapply(total_id,FUN=function(x) is.null(unlist(x)))
 (length(null_loc1)-sum(null_loc1))/length(null_loc1)
 
 # liberal mention percentage  
-total_id<-lapply(tweet_liberal,FUN = function(x) x$entities$user_mentions)
+total_id<-lapply(tweet_liberal_elite,FUN = function(x) x$entities$user_mentions)
 null_loc2<-sapply(total_id,FUN=function(x) is.null(unlist(x)))
 (length(null_loc2)-sum(null_loc2))/length(null_loc2)
 
@@ -144,22 +144,21 @@ coun<-function(x){
   sapply(gregexpr("\\W+", x$text), length) + 1
 }
 
-word_len<-sapply(tweet_conserv, FUN = coun)
+word_len<-sapply(tweet_conserv_elite, FUN = coun)
 mean(word_len)
-
 # liberal word average  
-word_len2<-sapply(tweet_liberal, FUN = coun)
+word_len2<-sapply(tweet_liberal_elite, FUN = coun)
 mean(word_len2)
 
 mean(c(word_len,word_len2))
 
-# conserv url percentage  
-total_id<-lapply(tweet_conserv,FUN = function(x) x$entities$urls)
+# conserv hashtags percentage  
+total_id<-lapply(tweet_conserv,FUN = function(x) x$entities$hashtags)
 null_loc1<-sapply(total_id,FUN=function(x) is.null(unlist(x)))
 (length(null_loc1)-sum(null_loc1))/length(null_loc1)
 
-# liberal url percentage  
-total_id<-lapply(tweet_liberal,FUN = function(x) x$entities$urls)
+# liberal hashtags percentage  
+total_id<-lapply(tweet_liberal,FUN = function(x) x$entities$hashtags)
 null_loc2<-sapply(total_id,FUN=function(x) is.null(unlist(x)))
 (length(null_loc2)-sum(null_loc2))/length(null_loc2)
 
@@ -169,38 +168,43 @@ null_loc2<-sapply(total_id,FUN=function(x) is.null(unlist(x)))
 
 # conserv top10uses's tweet  
 id1<-sapply(tweet_conserv, function(x) x$user$id_str)  
-sort(table(id1),decreasing = T)[1:(0.1*length(id1))]
-
-id2<-sapply(tweet_liberal, function(x) x$user$id_str)  
-sort(table(id2),decreasing = T)[1:(0.1*length(id2))]
-
-sort(table(c(id1,id2)),decreasing = T)[1:(0.1*length(c(id1,id2)))]
 
 
+id2<-sapply(tweet_liberal, function(x) x$user$id_str) 
+
+## cross retweet  
+id_l<-filter(iden,ideology=="L")$screen_name
+id_c<- filter(iden,ideology=="C")$screen_name
+cross<-function(x){
+  if(is.null(x$retweeted_status)) return(FALSE)
+  else{
+    if(x$retweeted_status$user$screen %in% id_c) return(TRUE)
+  }
+}
+
+a<-sapply(tweet_liberal, FUN =cross)
+sum(unlist(a))
 
 ###############for elite########
 
 
 des<-data.frame(
   user_num=c(nrow(iden), nrow(filter(iden,ideology=="C")),nrow(filter(iden,ideology=="L"))) 
-                , followers_num= c(sum(iden$followers_count),sum(filter(iden,ideology=="C")$followers_count),sum(filter(iden,ideology=="L")$followers_count))
-                , following_num= rep(NA,3)
+                 followers_num= c(sum(iden$followers_count),sum(filter(iden,ideology=="C")$followers_count),sum(filter(iden,ideology=="L")$followers_count))
+                 following_num= rep(NA,3)
   
-                , total_tweets=c(length(tweet_conserv)+length(tweet_conserv),length(tweet_conserv),length(tweet_liberal)) 
+                 total_tweets=c(length(tweet_conserv_elite)+length(tweet_conserv_elite),length(tweet_conserv_elite),length(tweet_liberal_elite)) 
   
-                , total_tweet1=c(sum(volume[1:17,4]),sum(volume[1:17,2]),sum(volume[1:17,3])) 
-                ,total_tweet2=c(sum(volume[18:36,4]),sum(volume[18:36,2]),sum(volume[18:36,3])) 
-                , total_tweet3=c(sum(volume[37:54,4]),sum(volume[37:54,2]),sum(volume[37:54,3]))  
+                 total_tweet1=c(sum(volume[1:18,4]),sum(volume[1:18,2]),sum(volume[1:18,3])) 
+                total_tweet2=c(sum(volume[19:37,4]),sum(volume[19:37,2]),sum(volume[19:37,3])) 
+                 total_tweet3=c(sum(volume[38:55,4]),sum(volume[38:55,2]),sum(volume[38:55,3]))  
   
-                , retweets_perc=c(44.20,43.34,45.58)
-                , retweets_aver=c(46,38,58) 
-                , mentions_per= c(65.83,65.23,66.79)
-                , word_aver=c(19.55,19.35,19.89) 
-                , URL_perc= c(50.93,51.17,50.55)
-  
-                ,tweetsbytop10_perc=c(sum(sort(table(c(id1,id2)),decreasing = T)[1:round(0.1*length(c(table(id1),table(id2))))])/(length(tweet_conserv)+length(tweet_liberal))
-                                      ,sum(sort(table(id1),decreasing = T)[1:round(0.1*length(table(id1)))])/length(tweet_conserv)
-                                      ,sum(sort(table(id2),decreasing = T)[1:round(0.1*length(table(id2)))])/length(tweet_liberal)) )
+                tweetsbytop10_perc=c(sum(sort(table(c(id1,id2)),decreasing = T)[1:round(0.1*length(c(table(id1),table(id2))))])/(length(tweet_conserv)+length(tweet_liberal))
+                                      sum(sort(table(id1),decreasing = T)[1:round(0.1*length(table(id1)))]) / length(tweet_conserv)
+                                      sum(sort(table(id2),decreasing = T)[1:round(0.1*length(table(id2)))]) / length(tweet_liberal)
+                 tweetsbytop1_perc=c(sum(sort(table(c(id1,id2)),decreasing = T)[1:round(0.01*length(c(table(id1),table(id2))))])/(length(tweet_conserv)+length(tweet_liberal)),
+                                       sum(sort(table(id1),decreasing = T)[1:round(0.01*length(table(id1)))]) / length(tweet_conserv),
+                                       sum(sort(table(id2),decreasing = T)[1:round(0.01*length(table(id2)))]) / length(tweet_liberal))
 
 
-View(des)  
+

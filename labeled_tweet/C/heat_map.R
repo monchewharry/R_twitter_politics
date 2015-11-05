@@ -23,15 +23,31 @@ heat_m<-as.data.frame(heat_m)
 heat_m$Name<-rownames(heat_m)
 head(heat_m)
 nba.m <- melt(heat_m)
-
+nba.m<-rename(nba.m,period=variable)
 
 ###########  
-library(ggplot2)
-library(scales)
-png("heat_conserv.png")
-nba.m <- ddply(nba.m, .(variable), transform,
-                     rescale = rescale(value))
-(p <- ggplot(nba.m, aes(variable, Name)) +
-  geom_tile(aes(fill = rescale),colour = "black") + 
-  scale_fill_gradient(low = "white",high = "red"))
+
+library(reshape2, ggplot2)
+dat <- nba.m
+png("heat_conserv.png",width = 1500,height = 1000)
+p1 <- ggplot(dat, aes(period, Name, group=Name)) +
+  geom_tile(aes(fill = value),colour = "black") +
+  geom_text(aes(fill = dat$value, label = as.character(round(dat$value, 1)))) +
+  scale_fill_gradient(low = "white", high = "red") 
+p1
 dev.off()
+
+
+name<-c("tlot","teaparty","tcot","scotus","p2","ocra","obamatax","obamacare","obamainthreewords"
+        ,"ilikeobamacare","healthcare","hcr","gop","fullrepeal","aca")
+nba.m2<- filter(nba.m,Name %in%name)
+dat <- nba.m2
+png("heat_conserv_top.png",width = 1500,height = 1000)
+p1 <- ggplot(dat, aes(period, Name, group=Name)) +
+  geom_tile(aes(fill = value),colour = "black") +
+  geom_text(aes(fill = dat$value, label = as.character(round(dat$value, 1)))) +
+  scale_fill_gradient(low = "white", high = "red") 
+p1
+dev.off()
+
+
