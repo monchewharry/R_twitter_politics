@@ -53,4 +53,12 @@ p1 <- ggplot(dat, aes(period, Name, group=Name)) +
 p1
 dev.off()
 
-
+nba.m2<- filter(nba.m,!Name%in%name)
+dat <- nba.m2
+png("../L/heat_liberal_last.png",width = 1500,height = 1000)
+p1 <- ggplot(dat, aes(period, Name, group=Name)) +
+  geom_tile(aes(fill = value),colour = "black") +
+  geom_text(aes(fill = dat$value, label = as.character(round(dat$value, 1)))) +
+  scale_fill_gradient(low = "white", high = "red") 
+p1
+dev.off()

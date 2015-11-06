@@ -26,8 +26,8 @@ nba.m <- melt(heat_m)
 nba.m<-rename(nba.m,period=variable)
 
 ###########  
-
 library(reshape2, ggplot2)
+##for the whole
 dat <- nba.m
 png("heat_conserv.png",width = 1500,height = 1000)
 p1 <- ggplot(dat, aes(period, Name, group=Name)) +
@@ -37,7 +37,7 @@ p1 <- ggplot(dat, aes(period, Name, group=Name)) +
 p1
 dev.off()
 
-
+##for the top
 name<-c("tlot","teaparty","tcot","scotus","p2","ocra","obamatax","obamacare","obamainthreewords"
         ,"ilikeobamacare","healthcare","hcr","gop","fullrepeal","aca")
 nba.m2<- filter(nba.m,Name %in%name)
@@ -50,4 +50,17 @@ p1 <- ggplot(dat, aes(period, Name, group=Name)) +
 p1
 dev.off()
 
+
+## for the last
+name<-c("tlot","teaparty","tcot","scotus","p2","ocra","obamatax","obamacare","obamainthreewords"
+        ,"ilikeobamacare","healthcare","hcr","gop","fullrepeal","aca")
+nba.m2<- filter(nba.m,!Name%in%name)
+dat <- nba.m2
+png("heat_conserv_last.png",width = 1500,height = 1000)
+p1 <- ggplot(dat, aes(period, Name, group=Name)) +
+  geom_tile(aes(fill = value),colour = "black") +
+  geom_text(aes(fill = dat$value, label = as.character(round(dat$value, 1)))) +
+  scale_fill_gradient(low = "white", high = "red") 
+p1
+dev.off()
 
