@@ -2,12 +2,7 @@ this is the project on classifying and visualizing twitter users relating to the
 
 Here are the tools I have used for this project.
 
-## 1. learn R
-
-- **The art of R programming**  
-- Over Stackflow
-
-## 2. data visualization 
+## 1. data visualization 
 
 - <http://kateto.net/network-visualization>  
 - package:ggplot2 , igraph , quantmod 
