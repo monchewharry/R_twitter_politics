@@ -1,4 +1,5 @@
-this is the project on classifying and visualizing twitter users relating to their political feelings.
+This is the project on classifying and visualizing twitter users relating to their political orientation.
+More project's structure at [junghwanyang/obamacare_classification](https://github.com/junghwanyang/obamacare_classification).
 
 Here are the tools I have used for this project.
 
